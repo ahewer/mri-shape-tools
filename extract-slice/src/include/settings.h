@@ -24,6 +24,7 @@ public:
   bool yzOutput;
 
   bool discard = false;
+  bool all = false;
 
   Settings(int argc, char* argv[]) {
 
@@ -33,6 +34,7 @@ public:
     FlagList<int> xzSlicesFlag("xz", this->xzSlices, true);
     FlagList<int> yzSlicesFlag("yz", this->yzSlices, true);
     FlagNone discardFlag("discard", this->discard);
+    FlagNone allFlag("all", this->all);
 
     FlagsParser parser(argv[0]);
     parser.define_flag(&inputFlag);
@@ -41,6 +43,7 @@ public:
     parser.define_flag(&xzSlicesFlag);
     parser.define_flag(&yzSlicesFlag);
     parser.define_flag(&discardFlag);
+    parser.define_flag(&allFlag);
 
     parser.parse_from_command_line(argc, argv);
 
