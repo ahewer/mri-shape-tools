@@ -4,6 +4,7 @@
 #include "image/ImageData.h"
 #include "image/ImageAccess.h"
 #include "image/ImageValues.h"
+#include "image/histogram/LocalEnhancement.h"
 
 class ImageHistogram{
 
@@ -27,6 +28,18 @@ public:
     equalize_histogram();
 
   }
+
+  void local_enhancement(
+                         const int& radius,
+                         const double& multiplier,
+                         const double& lowerBound,
+                         const double& upperBound
+                         ) {
+
+    LocalEnhancement(this->imageData, radius, multiplier, lowerBound, upperBound).apply();
+
+  }
+
 
 private:
 
