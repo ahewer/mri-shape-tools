@@ -36,7 +36,7 @@ public:
                          const double& upperBound
                          ) {
 
-    LocalEnhancement(this->imageData, radius, multiplier, lowerBound, upperBound).apply();
+    HistogramLocalEnhancement(this->imageData, radius, multiplier, lowerBound, upperBound).apply();
 
   }
 

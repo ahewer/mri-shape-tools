@@ -1,12 +1,21 @@
 #ifndef __HISTOGRAM_LOCAL_ENHANCEMENT_H__
 #define __HISTOGRAM_LOCAL_ENHANCEMENT_H__
 
+#include <cmath>
+
+#include "image/ImageData.h"
+#include "image/ImageStatistics.h"
+
+
 class HistogramLocalEnhancement{
 
 private:
 
   ImageData& imageData;
   ImageAccess imageAccess;
+
+  double globalMean;
+  double globalStandardDeviation;
 
   const int& radius;
   const double& multiplier;
@@ -52,7 +61,7 @@ public:
           compute_local_statistics(i, j, k, localMean, localStandardDeviation);
 
           if( (localMean < this->globalMean) &&
-              (lowerBound * this->globalStandardDeviation <= this->localStandardDeviation ) &&
+              (lowerBound * this->globalStandardDeviation <= localStandardDeviation ) &&
               (localStandardDeviation <= this->upperBound * this->globalStandardDeviation ) ) {
 
             access.at_grid(i, j, k) = this->multiplier * access.at_grid(i, j, k);
@@ -94,7 +103,7 @@ private:
 
     } // end i
 
-    mean /= this->imageData.size();
+    mean /= pow( radius + 1, 3);
 
     standardDeviation = 0;
 
@@ -110,7 +119,7 @@ private:
 
     } // end i
 
-    standardDeviation = sqrt(standardDeviation / this->imageData.values.size());
+    standardDeviation = sqrt(standardDeviation / pow( radius + 1, 3));
   }
 
 };

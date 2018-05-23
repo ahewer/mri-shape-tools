@@ -64,7 +64,7 @@ public:
 
     }
 
-    return value / ( nx * ny * nz );
+    return result / ( nx * ny * nz );
 
   }
 
