@@ -16,8 +16,7 @@ public:
 
   std::string globalTransformation;
   std::string headMotionEma;
-
-  std::string originalHeadMotionEmaFlag;
+  std::string originalHeadMotionEma;
 
   double startTime;
   double endTime;
@@ -33,10 +32,6 @@ public:
     FlagSingle<std::string> headMotionEmaFlag("headMotionEma", this->headMotionEma);
     FlagSingle<std::string> originalHeadMotionEmaFlag("originalHeadMotionEma", this->originalHeadMotionEma);
 
-    FlagSingle<std::string> originalLeftFlag("originalLeft", this->originalLeft);
-    FlagSingle<std::string> originalRightFlag("originalRight", this->originalRight);
-    FlagSingle<std::string> originalFrontFlag("originalFront", this->originalFront);
-
     FlagSingle<double> startTimeFlag("startTime", this->startTime);
     FlagSingle<double> endTimeFlag("endTime", this->endTime);
     FlagSingle<double> samplingRateFlag("samplingRate", this->samplingRate);
@@ -49,6 +44,7 @@ public:
     parser.define_flag(&outputBaseFlag);
     parser.define_flag(&globalTransformationFlag);
     parser.define_flag(&headMotionEmaFlag);
+    parser.define_flag(&originalHeadMotionEmaFlag);
     parser.define_flag(&startTimeFlag);
     parser.define_flag(&endTimeFlag);
     parser.define_flag(&samplingRateFlag);

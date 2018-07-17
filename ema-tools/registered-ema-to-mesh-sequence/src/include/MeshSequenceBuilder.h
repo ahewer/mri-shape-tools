@@ -13,6 +13,7 @@ class MeshSequenceBuilder{
 private:
 
   Ema headMotion;
+  Ema originalHeadMotion;
 
   RegisteredEma registeredEma;
 
@@ -27,6 +28,7 @@ private:
   double scaleFactor;
 
   bool headMotionSet = false;
+  bool originalHeadMotionSet = false;
   bool registeredEmaSet = false;
   bool tongueModelSet = false;
   bool globalTransformationSet = false;
@@ -47,6 +49,7 @@ public:
 
     return MeshSequence(
                         this->headMotion,
+                        this->originalHeadMotion,
                         this->registeredEma,
                         this->tongueModel,
                         this->globalTransformation,
@@ -63,6 +66,15 @@ public:
 
     this->headMotion = headMotion;
     this->headMotionSet = true;
+
+    return *this;
+
+  }
+
+  MeshSequenceBuilder& set_original_head_motion(const Ema& originalHeadMotion) {
+
+    this->originalHeadMotion = originalHeadMotion;
+    this->originalHeadMotionSet = true;
 
     return *this;
 
@@ -138,6 +150,7 @@ private:
     return (
 
             headMotionSet &&
+            originalHeadMotionSet &&
             registeredEmaSet &&
             tongueModelSet &&
             globalTransformationSet &&
