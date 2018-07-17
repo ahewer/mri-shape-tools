@@ -17,6 +17,8 @@ public:
   std::string globalTransformation;
   std::string headMotionEma;
 
+  std::string originalHeadMotionEmaFlag;
+
   double startTime;
   double endTime;
   double samplingRate;
@@ -29,6 +31,11 @@ public:
     FlagSingle<std::string> outputBaseFlag("outputBase", this->outputBase);
     FlagSingle<std::string> globalTransformationFlag("globalTransformation", this->globalTransformation);
     FlagSingle<std::string> headMotionEmaFlag("headMotionEma", this->headMotionEma);
+    FlagSingle<std::string> originalHeadMotionEmaFlag("originalHeadMotionEma", this->originalHeadMotionEma);
+
+    FlagSingle<std::string> originalLeftFlag("originalLeft", this->originalLeft);
+    FlagSingle<std::string> originalRightFlag("originalRight", this->originalRight);
+    FlagSingle<std::string> originalFrontFlag("originalFront", this->originalFront);
 
     FlagSingle<double> startTimeFlag("startTime", this->startTime);
     FlagSingle<double> endTimeFlag("endTime", this->endTime);
