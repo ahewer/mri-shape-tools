@@ -8,12 +8,24 @@
 
 class OtsuEnergy{
 
+private:
+
+  const ImageData& imageData;
+
+  ImageData segmentation;
+
+  double meanInside;
+  double meanOutside;
+
+  double weightInside = 1;
+  double weightOutside = 1;
+
 public:
 
-OtsuEnergy(const ImageData& imageData) : imageData(imageData) {
-}
+  OtsuEnergy(const ImageData& imageData) : imageData(imageData) {
+  }
 
-double get_energy(const double& threshold) {
+  double get_energy(const double& threshold) {
 
     // compute segmentation
     this->segmentation = this->imageData;
@@ -27,7 +39,17 @@ double get_energy(const double& threshold) {
 
     return energy;
 
-}
+  }
+
+  void set_weights(
+                          const double& weightInside,
+                          const double& weightOutside
+                          ) {
+
+    this->weightInside = weightInside;
+    this->weightOutside = weightOutside;
+
+  }
 
 private:
 
@@ -90,18 +112,12 @@ private:
     }
 
     const double varianceSum =
-      varOutside / amountOutside + varInside / amountInside;
+      this->weightOutside * varOutside / amountOutside +
+      this->weightInside * varInside / amountInside;
 
     return  varianceSum;
 
   }
-
-const ImageData& imageData;
-
-ImageData segmentation;
-
-double meanInside;
-double meanOutside;
 
 };
 #endif
