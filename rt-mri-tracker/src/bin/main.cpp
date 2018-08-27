@@ -1,11 +1,18 @@
-#include "image/Image.h"
+#include <fstream>
+#include <json/json.h>
+#include <stdexcept>
 
-#include "settings.h"
-#include "Tracker.h"
+
+#include "image/Image.h"
 #include "mesh/MeshIO.h"
 #include "mesh/Mesh.h"
 #include "model/ModelReader.h"
 #include "utility/CreatePointCloud.h"
+#include "mesh-modify/ApplyModifications.h"
+
+#include "settings.h"
+#include "Tracker.h"
+#include "Subset.h"
 
 int main(int argc, char* argv[]) {
 
@@ -18,8 +25,11 @@ int main(int argc, char* argv[]) {
   ModelReader modelReader(settings.model);
   Model model = modelReader.get_model();
 
+  // only consider subset of vertices
+  std::set<int> subset = Subset::read(settings.subset);
+  model.truncate().vertex(subset);
+
   TrackerData trackerData(model, settings);
-  trackerData.sourceIds = settings.sourceIds;
 
   Tracker tracker(trackerData);
 
@@ -31,8 +41,21 @@ int main(int argc, char* argv[]) {
 
   const double& hz = image.info().get_hz();
 
+  Json::Value meshModifications;
+  std::ifstream modFile(settings.meshModifications);
 
-  for(int i = 0; i < image.info().get_nz(); ++i) {
+  // throw exception if file can not be opened
+  if( modFile.is_open() == false ) {
+
+    throw std::runtime_error("Cannot open mesh modification file.");
+
+  }
+
+  modFile >> meshModifications;
+
+  modFile.close();
+
+  for(int i = 0; i < nz; ++i) {
 
     // extract slice of segmented sequence
     Image copy = image;
@@ -41,6 +64,8 @@ int main(int argc, char* argv[]) {
     // build point cloud
     Mesh cloud = CreatePointCloud(copy.data(), diffusionSettings).create_point_cloud();
 
+    // map cloud to tongue model
+    meshModify::ApplyModifications(cloud).apply(meshModifications);
 
     // update data for current time frame
     tracker.data().target = cloud;

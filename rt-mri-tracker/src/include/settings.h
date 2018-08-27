@@ -22,13 +22,12 @@ public:
   std::string outputFileName;
 
   std::string fixedSpeakerWeights = "";
+
+  std::string subset;
+
   bool fixSpeaker = false;
 
-  std::string emaModifications;
-  bool applyModifications = false;
-
-  std::vector<std::string> channels;
-  std::vector<int> sourceIds;
+  std::string meshModifications;
 
   fitModel::MinimizerSettings minimizerSettings;
   fitModel::EnergySettings energySettings;
@@ -45,13 +44,10 @@ public:
     FlagSingle<std::string> modelFlag("model", this->model);
     FlagSingle<std::string> outputFlag("output", this->outputFileName);
     FlagSingle<std::string> fixedSpeakerWeightsFlag("fixedSpeakerWeights", this->fixedSpeakerWeights, true);
+    FlagSingle<std::string> subsetFlag("subset", this->subset);
 
-    // ema modifications
-    FlagSingle<std::string> emaModificationsFlag("emaModifications", this->emaModifications, true);
-
-    // channel and vertex id correspondences
-    FlagList<std::string> channelsFlag("channels", this->channels);
-    FlagList<int> sourceIdsFlag("sourceIds", this->sourceIds);
+    // mesh modifications
+    FlagSingle<std::string> meshModificationsFlag("meshModifications", this->meshModifications);
 
     // smoothness for speaker and phoneme mode
     FlagSingle<double> speakerWeightFlag("speakerWeight", this->speakerWeight, true);
@@ -76,6 +72,11 @@ public:
       "maxFunctionEvals",
       this->minimizerSettings.maxFunctionEvals, true);
 
+    FlagSingle<int> frameIterationAmountFlag(
+                                         "frameIterationAmount",
+                                         this->minimizerSettings.iterationAmount, true);
+
+
     /////////////////////////////////////////////////////////////////////////
 
 
@@ -86,13 +87,10 @@ public:
     parser.define_flag(&modelFlag);
     parser.define_flag(&outputFlag);
     parser.define_flag(&fixedSpeakerWeightsFlag);
+    parser.define_flag(&subsetFlag);
 
-    // channel and vertex id correspondences
-    parser.define_flag(&channelsFlag);
-    parser.define_flag(&sourceIdsFlag);
-
-    // ema modifications
-    parser.define_flag(&emaModificationsFlag);
+    // mesh modifications
+    parser.define_flag(&meshModificationsFlag);
 
     // smoothness for speaker and phoneme mode
     parser.define_flag(&speakerWeightFlag);
@@ -105,17 +103,13 @@ public:
     parser.define_flag(&convergenceFactorFlag);
     parser.define_flag(&projectedGradientToleranceFlag);
     parser.define_flag(&maxFunctionEvalsFlag);
+    parser.define_flag(&frameIterationAmountFlag);
 
     parser.parse_from_command_line(argc, argv);
 
-    // set fixed settings
-
-    // we are not using nearest neighbor discovery -> use only one iteration
-    this->minimizerSettings.iterationAmount = 1;
-
     // use fixed correspondences
     this->energySettings.searchStrategy =
-      fitModel::EnergySettings::SearchStrategy::FIXED;
+      fitModel::EnergySettings::SearchStrategy::BASIC;
 
     // set weights
     this->energySettings.weights["speakerSmoothnessTerm"] = speakerWeight;
@@ -123,32 +117,6 @@ public:
     this->energySettings.weights["meanBiasTerm"] = meanBiasWeight;
 
     this->fixSpeaker = fixedSpeakerWeightsFlag.is_present();
-
-    this->applyModifications = emaModificationsFlag.is_present();
-
-    // integrity check
-    if( this->channels.size() != this->sourceIds.size()) {
-      throw std::runtime_error("SourceIds and channels size mismatch!");
-    }
-
-    // make sure that sourceIds are sorted in ascending order
-    // and preserve sourceId ->channel correspondence
-
-    // build correspondence map
-    std::map<int, std::string> channelMap;
-
-    for(unsigned int i = 0; i < this->channels.size(); ++i) {
-      channelMap[this->sourceIds.at(i)] = this->channels.at(i);
-    }
-
-    // sort in ascending order
-    std::sort(this->sourceIds.begin(), this->sourceIds.end());
-
-    // restore correspondences
-    this->channels.clear();
-    for(const int& id: this->sourceIds) {
-      this->channels.push_back(channelMap[id]);
-    }
 
   }
 

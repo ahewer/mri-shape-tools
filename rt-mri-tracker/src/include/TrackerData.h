@@ -29,6 +29,9 @@ public:
   arma::vec speakerWeight;
   arma::vec phonemeWeight;
 
+  // fixed speaker weights (optional)
+  arma::vec fixedSpeakerWeights;
+
   // settings for fitting
   Settings settings;
 

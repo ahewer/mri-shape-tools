@@ -24,21 +24,6 @@ public:
 
   /*--------------------------------------------------------------------------*/
 
-  void for_subset() {
-
-    // create copy of model
-    this->trackerData.currentModel =
-      this->trackerData.originalModel;
-
-    // truncate the model
-    this->trackerData.currentModel.truncate().vertex(subset);
-
-    this->trackerState.truncatedToSubset = true;
-
-  }
-
-  /*--------------------------------------------------------------------------*/
-
   void to_fixed_speaker(const arma::vec& speakerWeights) {
 
     this->trackerData.currentModel = compute_pca_model(speakerWeights);
