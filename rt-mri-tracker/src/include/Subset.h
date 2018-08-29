@@ -31,9 +31,15 @@ public:
   
         // iterate through list
         for(const Json::Value& value: vertexList) {
-  
-          subset.insert( value.asInt() );
-  
+
+          const int id = value.asInt();
+
+          for(int i = 0; i < 3; ++i) {
+
+            subset.insert(3 * id + i);
+
+          }
+
         } // end for vertexList
   
       return subset;

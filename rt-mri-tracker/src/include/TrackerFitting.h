@@ -21,7 +21,7 @@ public:
     trackerData(trackerData),
     trackerState(trackerState),
     trackerLogger(trackerLogger),
-    energyData(trackerData.currentModel) {
+    energyData(trackerData.originalModel) {
 
     this->energy = new fitModel::Energy(this->energyData,
                                         this->trackerData.settings.energySettings);

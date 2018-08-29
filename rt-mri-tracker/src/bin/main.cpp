@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
     // extract slice of segmented sequence
     Image copy = image;
-    copy.crop().to(0, 0, i, nx, ny, i);
+    copy.crop().to(0, 0, i, nx-1, ny-1, i);
 
     // build point cloud
     Mesh cloud = CreatePointCloud(copy.data(), diffusionSettings).create_point_cloud();
