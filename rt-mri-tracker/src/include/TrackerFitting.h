@@ -105,6 +105,9 @@ private:
     this->energy->settings().weights.at("speakerSmoothnessTerm") = 0;
     this->energy->settings().weights.at("phonemeSmoothnessTerm") = 0;
 
+    // activate landmark term for first frame
+    this->energy->settings().weights.at("landmarkTerm") = 1.;
+
     fit_frame();
 
     // restore old weights
@@ -113,6 +116,9 @@ private:
 
     this->energy->settings().weights.at("phonemeSmoothnessTerm") =
       phonemeSmoothnessWeight;
+
+    // deactivate landmark term again
+    this->energy->settings().weights.at("landmarkTerm") = 0.;
 
     this->trackerState.firstFrame = false;
 

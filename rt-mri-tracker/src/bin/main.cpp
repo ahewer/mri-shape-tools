@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
   ModelReader modelReader(settings.model);
   Model model = modelReader.get_model();
 
-  // only consider subset of vertices
+  // only consider subset of vertices, otherwise the fitting would try to move all vertices to the midsagittal point cloud
   std::set<int> subset = Subset::read(settings.subset);
   model.truncate().vertex(subset);
 
