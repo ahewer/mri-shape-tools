@@ -6,6 +6,7 @@
 #include "image/Image.h"
 #include "mesh/MeshIO.h"
 #include "mesh/Mesh.h"
+#include "mesh/MeshTruncator.h"
 #include "model/ModelReader.h"
 #include "utility/CreatePointCloud.h"
 #include "mesh-modify/ApplyModifications.h"
@@ -27,7 +28,15 @@ int main(int argc, char* argv[]) {
 
   // only consider subset of vertices, otherwise the fitting would try to move all vertices to the midsagittal point cloud
   std::set<int> subset = Subset::read(settings.subset);
+
+  Mesh truncatedMesh = MeshTruncator(model.data().get_shape_space_origin_mesh()).to(subset);
+
+
   model.truncate().vertex(subset);
+
+  model.data().set_shape_space_origin_mesh(truncatedMesh);
+
+  model.data().mark_faces_as_valid();
 
   TrackerData trackerData(model, settings);
 

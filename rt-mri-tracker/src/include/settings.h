@@ -109,7 +109,7 @@ public:
 
     // use fixed correspondences
     this->energySettings.searchStrategy =
-      fitModel::EnergySettings::SearchStrategy::BASIC;
+      fitModel::EnergySettings::SearchStrategy::ADAPTIVE;
 
     // set weights
     this->energySettings.weights["speakerSmoothnessTerm"] = speakerWeight;
