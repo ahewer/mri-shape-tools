@@ -71,7 +71,7 @@ namespace lucasKanade{
 
     void compute_derivatives() {
 
-      arma::mat derivative = arma::zeros(this->transformationAmount).t();
+      arma::vec derivative = arma::zeros(this->transformationAmount);
 
       const std::vector<arma::mat>& imageGradientTimesJacobian =
         this->incrementallyDeformedTemplate.get_image_gradient_times_jacobian();
@@ -85,7 +85,6 @@ namespace lucasKanade{
       this->gradient = derivative;
 
     }
-
 
   };
 
