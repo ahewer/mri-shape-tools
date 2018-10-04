@@ -6,6 +6,9 @@
 
 #include "energy/EnergyData.h"
 #include "ZeroNormalizedCrossCorrelation.h"
+#include "BrightnessConstancy.h"
+
+#include "PenalizerTypeEnum.h"
 
 namespace lucasKanade{
 
@@ -66,15 +69,45 @@ namespace lucasKanade{
 
       incrementallyDeformedTemplate.compute(increment);
 
-      ZeroNormalizedCrossCorrelation zeroNormalizedCrossCorrelation(
-                                                                    this->energy.data().originalTemplate.get_normalized_values(),
-                                                                    this->energy.data().deformedTemplate,
-                                                                    incrementallyDeformedTemplate
-                                                                    );
+      arma::vec localGradient;
 
-      energy = - zeroNormalizedCrossCorrelation.get_correlation();
+      switch(this->energy.settings().penalizerType) {
 
-      const arma::vec localGradient = - zeroNormalizedCrossCorrelation.get_correlation_derivative();
+      case BRIGHTNESS:
+
+        {
+
+          BrightnessConstancy constancy(
+                                        this->energy.data().originalTemplate.get_values(),
+                                        this->energy.data().deformedTemplate,
+                                        incrementallyDeformedTemplate);
+
+          energy = constancy.get_energy();
+
+          localGradient = constancy.get_gradient();
+
+        }
+
+        break;
+
+      default:
+
+        {
+          ZeroNormalizedCrossCorrelation zeroNormalizedCrossCorrelation(
+                                                                        this->energy.data().originalTemplate.get_normalized_values(),
+                                                                        this->energy.data().deformedTemplate,
+                                                                        incrementallyDeformedTemplate
+                                                                        );
+
+          energy = - zeroNormalizedCrossCorrelation.get_correlation();
+
+          localGradient = - zeroNormalizedCrossCorrelation.get_correlation_derivative();
+
+        }
+
+        break;
+
+      }
 
       for(int j = 0; j < transformationAmount; ++j) {
 

@@ -20,6 +20,7 @@ public:
   std::string landmarkFile;
   std::string output;
 
+  std::string penalizerType = "ZNCC";
 
   lucasKanade::MinimizerSettings minimizerSettings;
   lucasKanade::EnergySettings energySettings;
@@ -33,6 +34,9 @@ public:
     FlagSingle<std::string> outputFlag("output", this->output);
 
     /////////////////////////////////////////////////////////////////////////
+
+    // energy settings
+    FlagSingle<std::string> penalizerTypeFlag("penalizerType", this->penalizerType, true);
 
     // minimizer settings
     FlagSingle<int> iterationAmountFlag(
@@ -60,6 +64,9 @@ public:
     parser.define_flag(&landmarkFileFlag);
     parser.define_flag(&outputFlag);
 
+    // energy settings
+    parser.define_flag(&penalizerTypeFlag);
+
     // minimizer settings
     parser.define_flag(&iterationAmountFlag);
     parser.define_flag(&convergenceFactorFlag);
@@ -67,6 +74,18 @@ public:
     parser.define_flag(&maxFunctionEvalsFlag);
 
     parser.parse_from_command_line(argc, argv);
+
+    if(this->penalizerType == "brightness") {
+
+      energySettings.penalizerType = lucasKanade::BRIGHTNESS;
+
+    }
+
+    else {
+
+      energySettings.penalizerType = lucasKanade::ZNCC;
+
+    }
 
   }
 
