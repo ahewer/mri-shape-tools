@@ -6,6 +6,7 @@
 #include <string>
 
 #include "mesh/Mesh.h"
+#include "mesh/MeshAverager.h"
 
 class SampleDataBase{
 
@@ -128,6 +129,21 @@ public:
   }
 
   /*----------------------------------------------------------------------*/
+
+  void center_meshes_along_x() {
+    std::vector<Mesh> meshes = get_all_meshes();
+    Mesh mean = MeshAverager::average(meshes);
+    const arma::vec center = mean.get_center();
+
+    for(const std::string& speakerId: this->speakerIds) {
+      for(const std::string& phonemeId: this->phonemeIds) {
+        Mesh& current = this->database.at(speakerId).at(phonemeId);
+        for(arma::vec& p: current.get_vertices() ) {
+          p(0) -= center(0); 
+        }
+      }
+    }
+  }
 
 private:
 
