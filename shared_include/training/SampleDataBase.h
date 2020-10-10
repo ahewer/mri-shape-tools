@@ -130,6 +130,7 @@ public:
 
   /*----------------------------------------------------------------------*/
 
+  // TODO: better provide vertex id to use as midsagittal center
   void center_meshes_along_x() {
     std::vector<Mesh> meshes = get_all_meshes();
     Mesh mean = MeshAverager::average(meshes);
