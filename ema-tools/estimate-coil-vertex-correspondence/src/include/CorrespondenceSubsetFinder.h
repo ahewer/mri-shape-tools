@@ -178,14 +178,17 @@ private:
   */
   void derive_subset_factors() {
 
-    int initial = this->combinationAmount;
-  
+    std::vector<int> individualFactors;
     for(const auto& subset: this->subsets) {
-  
-      initial /= subset.size();
-  
+      individualFactors.push_back(subset.size());
+    }
+
+    for(int i = 0; i < this->subsets.size(); ++i) {
+      int initial = 1;
+      for(int j = i + 1; j < this->subsets.size(); ++j) {
+        initial *= individualFactors[j];
+      }
       this->subsetFactors.push_back(initial);
-  
     }
   
   }
